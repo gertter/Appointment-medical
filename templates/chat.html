@@ -1,0 +1,85 @@
+{% extends 'user/base.html' %}
+{% load staticfiles %}
+{% block title %}
+    Chat
+{% endblock %}
+{% block specific_css %}
+    <link href="{% static 'css/date_picker.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/botui/build/botui.min.css" >
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/botui/build/botui-theme-default.css" >
+{% endblock %}
+{% block main %}
+    <div id="breadcrumb">
+        <div class="container">
+            <ul>
+                <li><a href="#">Home</a></li>
+
+                <li>Chat</li>
+            </ul>
+        </div>
+    </div>
+    <!-- /breadcrumb -->
+
+    <div class="container margin_60">
+        <div class="botui-app-container" id="hello-world">
+            <bot-ui></bot-ui>
+        </div>
+    </div>
+    
+    
+    <!-- /container -->
+{% endblock %}
+{% block specific_js %}
+    <script src="{% static 'js/bootstrap-datepicker.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/vue/latest/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/botui/build/botui.js"></script>
+    <script>
+        //#4 Initialization
+        var botui = new BotUI('hello-world');
+        //#5 API call
+        botui.message.add({ // show a message
+            delay: 200,
+            loading:true,
+            content: 'Whats your name?'
+        }).then(function () { // wait till its shown
+            return botui.action.text({ // show 'text' action
+                action: {
+                placeholder: 'Your name'
+                }
+            });
+        }).then(function (res) { // get the result
+            botui.message.add({
+                delay: 200,
+                loading:true,
+                content: 'Hello, ' + res.value + '!'
+            });
+        }).then(function () { // wait till its shown
+            return botui.action.text({ // show 'text' action
+                action: {
+                placeholder: 'Your name'
+                }
+            });
+        }).then(function (res) { // get the result
+            botui.message.add({
+                delay: 200,
+                loading:true,
+                content: 'Hello, ' + res.value + '!'
+            });
+        }).then(function () { // wait till its shown
+            return botui.action.text({ // show 'text' action
+                action: {
+                placeholder: 'Your name'
+                }
+            });
+        }).then(function (res) { // get the result
+            botui.message.add({
+                delay: 200,
+                loading:true,
+                content: 'Hello, ' + res.value + '!'
+            });
+        });
+        
+    </script>
+
+          
+{% endblock %}

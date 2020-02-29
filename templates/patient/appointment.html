@@ -1,0 +1,693 @@
+﻿{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    Make An Appointment
+{% endblock %}
+{% block specific_css %}
+    <link rel="stylesheet" href="{% static 'css/date_picker.css' %}" >
+{% endblock %}
+{% block main %}
+    <style>
+        .test{
+            position: relative;
+        }
+        .test:hover  .hello{
+            display: block;
+            height:80%;
+        }
+        .hello{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width:100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            text-align: center;
+            display: none;
+            color: white;
+            font-size: 16px;
+            padding-top: 10px;
+        }
+        .fis{
+            overflow-y: scroll;
+            padding:5px;
+            background-color:rgba(25,25,47,.5);
+            color:#ffff;
+            padding: 2px;
+        }
+        .fis.header_sticky {
+            width: 100%;
+            position: relative;
+            z-index: 998;
+            -moz-transition: all 0.3s ease-in-out;
+            -o-transition: all 0.3s ease-in-out;
+            -webkit-transition: all 0.3s ease-in-out;
+            -ms-transition: all 0.3s ease-in-out;
+            transition: all 0.3s ease-in-out;
+        }
+        .fis.header_sticky.sticky {
+            z-index: 998;
+            top:80px;
+            border-bottom: 1px solid #ededed;
+            position: fixed;
+        }
+        .step_numb{
+            color:#e9ecef;
+            font-size:24px;
+            font-weight:500;
+        }
+        .step_text{
+            padding:0px;
+            font-weight: 500;
+        }
+        .col-40 {
+          width: 40%;
+          margin-top: 10px;
+          font-size:16px;
+          color:#e84a5f;
+          font-weight: 800;
+        }
+
+        .col-60 {
+            color:#242525;
+            width: 60%;
+            font-size:16px;
+            margin-top: 10px;
+        }
+        @media screen and (max-width: 767px){
+            .col-40, .col-60{
+                width:100%;
+                margin-top:5px;
+                font-size:14px;
+            }
+        }
+    </style>
+    <div class="bg_color_2">
+        <nav class="fis header_sticky sticky">
+            <div class="container">
+                <ul class="nav nav-tabs" role="tablist"> 
+                    <li class="nav-link  active" id="tab00" style="text-align: center;">
+                        <div class="step_numb">1</div>
+                        <div class="step_text">General Questions</div>
+                    </li>
+                    <li class="nav-link" id="tab11" style="text-align: center;">
+                        <div class="step_numb">2</div>
+                        <div class="step_text">Select Examination</div>
+                    </li>
+                    <li class="nav-link" id="tab22" style="text-align: center;">
+                        <div class="step_numb">3</div>
+                        <div class="step_text">Select Clinic</div>
+                    </li>
+                    <li class="nav-link" id="tab33" style="text-align: center;">
+                        <div class="step_numb">4</div>
+                        <div class="step_text">Select Date</div>
+                     </li>
+                    <li class="nav-link" id="tab44" style="text-align: center;">
+                        <div class="step_numb">5</div>
+                        <div class="step_text">Select Time</div>
+                     </li>
+                    <li class="nav-link" id="tab55" style="text-align: center;">
+                        <div class="step_numb">6</div>
+                        <div class="step_text">Confirm Booking</div>
+                     </li>           
+                    <li class="nav-link" id="tab66" style="text-align: center;">
+                        <div class="step_numb">7</div>
+                        <div class="step_text">Submit & Preparations</div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div class="box_background">
+            <div class="box_general" style="padding:10px; margin:0px;">
+                <div class="tabs_styled_2">
+                    <div>
+                        <div data-tab id="tab0">
+                            <div class="main_title_3" style="margin-top:20px; line-height: 2;margin-bottom: 10px">
+                                <h3 style="color:#3f4079; font-size: 24px;"><i class="icon-doc-text-1"></i>General Questionaire</h3>
+                            </div>
+                            <div class="row" style="margin-left:40px;">
+                                <div>For the following questions, </div>
+                                <div>If your answer is <strong>"Yes"</strong>, you might receive follow-up questionaire from radiology clinic.</div> 
+                                <div>If your answer is <strong>"Not Sure"</strong>, please check with your GP before your examination</div>
+                            </div>
+                            <form style="border-width:2px; border-color:#3f4079;margin: 100px; margin-top: 20px;" method = "post">
+                                <div class="box_form" name="questions" id="questions">
+                                    {% for key,value in Question_dict %}
+                                        <div class="form-control" style="margin-bottom: 20px;">
+                                            <h6>{{value}}</h6>
+                                            <div class="row">
+                                                <div class="col-4"><input type="radio" name="{{key}}" value="Yes"><label> Yes </label></div>
+                                                <div class="col-4"><input type="radio" name="{{key}}" value="No"><label> No </label></div>
+                                                <div class="col-4"><input type="radio" name="{{key}}" value="Not Sure"><label> Not Sure </label></div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                             <div style="display: none" id="question_error" class="alert alert-warning ">
+                                <button id="question_close" type="button" class="close">×</button>
+                                <strong id="question_error_text">88888</strong>
+                            </div>
+                            </form>
+                            <div class="row">
+                                <div class="col-3" style="margin:auto;">
+                                    <a id="next0"class="btn_1 medium">Submit</a>
+                                </div>
+                            </div>
+                        </div>   
+                        <div data-tab id="tab1" style="display: none" role="tabpanel" aria-labelledby="book-tab">
+                            <div class="main_title_3" style="margin-bottom: 10px;">
+                                <h3 style="color: #e84a5f; font-size:20px; font-weight: 800; text-align: center;">
+                                    <i class="icon-book"></i>Select Examination Type
+                                </h3></div>
+                            <input type="text" name="examination_type" id="examination_type" hidden>
+                            <form method = "post" action="/get_examinations/" class="box-form">
+                                <ul class="examination" id="examination">
+                                    <li class="test">
+                                        <img data-exam="CT" src="{% static 'examination_img/ct.png' %}">
+                                        <div data-exam="CT" class="hello">
+                                            - Some tests require no preparation, these include: brain, sinus or facial bones, temporal bones (inner ear), spine, knee or wrist and CTs of the bones.
+                                            - You'll receive spcific document if preparations are needed.
+                                        </div>
+                                        <a herf = "https://www.insideradiology.com.au/computed-tomography/">How to prepare for CT?</a>
+                                    </li>
+                                    <li class="test"><img data-exam="MRI" src="{% static 'examination_img/mri.png' %}">
+                                        <div data-exam="MRI" class="hello">
+                                            - Magnetic Resonance Imaging
+                                            -To ensure it is safe for you to have an MRI, you will be required to complete a safety questionnaire.
+                                        </div>
+                                        <a herf="https://www.insideradiology.com.au/mri/">How to prepare for MRI?</a>
+                                    </li>
+
+                                    <li class="test"><img data-exam="X-ray" src="{% static 'examination_img/xray.png' %}">
+                                        <div data-exam="X-ray" class="hello">
+                                            - No specific preparation is required for a plain X-ray.
+                                            - Note that you should notify your radiologist if there is any chance you might be pregnant.
+                                        </div>
+                                        <a herf = "https://www.insideradiology.com.au/plain-radiograph-x-ray/">How to prepare for X-ray?</a>
+                                    </li>
+                                    <li class="test"><img data-exam="Women's Procedures"
+                                             src="{% static 'examination_img/womens.png' %}">
+                                        <div data-exam="Women's Procedures" class="hello">
+                                            - Detailed instructions will be given for specific tests.
+                                        </div>
+                                        <a href="https://www.insideradiology.com.au/for-health-consumers/womens-health/">Informaition about Women's Health Imaging</a>
+                                    </li>
+
+                                     <li class="test"><img data-exam="Children's Imaging" src="{% static 'examination_img/children.png' %}">
+                                        <div data-exam="Children's Imaging" class="hello">
+                                            -Paediatric (or pediatric) radiology is a subspecialty of diagnostic radiology focused on children, from babies through to adolescents and young adults.
+                                        </div>
+                                        <a href="https://www.insideradiology.com.au/paediatric-radiology/">Information about Children's Imaging</a>
+                                    </li>
+                                </ul>
+                            </form>
+                            <div style="display: none" id="exam_error"
+                                 class="alert alert-warning ">
+                                <button id="exam_error_close" type="button" class="close">&times;</button>
+                                <strong id="exam_error_text"></strong>
+                            </div>
+                            <p class="text-center"><a href="" id="next1" class="btn_1 medium">Next</a></p>
+                            <p class="text-center"><a href="" id="pre1" class="btn_1 medium">Back</a></p>
+                        </div>
+                        <div data-tab id="tab2" style="display: none" role="tabpanel" aria-labelledby="book-tab">
+                            <div class="main_title_3" style="margin-bottom: 10px;">
+                                <h3 style="color: #e84a5f; font-size:24px; font-weight: 800; text-align: center;">
+                                    <i class="icon-hospital"></i>Select Clinic
+                                </h3></div>
+                            <main class="theia-exception">
+                                <div id="results">
+                                   <div class="row" style="margin:0px;">
+                                        <div class="col-6">
+                                            <h4 id="all_result"><i class="icon-list"></i>Clinic List</h4>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="search_bar_list">
+                                                <input id="zip_code" type="text" class="form-control" placeholder="Search for office or zip code">
+                                                <input id="sechar" type="submit" value="Search">
+                                            </div>
+                                        </div>
+                                </div>
+                                </div>
+                                <div class="filters_listing">
+                                    <div class="container" >
+                                        <ul class="clearfix">
+                                            <li>
+                                                <h6>Type</h6>
+                                                <div class="switch-field">
+                                                    <input type="radio" id="all" name="type_patient" value="all" checked>
+                                                    <label for="all">All</label>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="container">
+                                    <div class="row" style="margin:auto;">
+                                        <div class="col-6" id="cli_info">
+                                        </div>
+                                        <aside class="col-6" style="padding:0px;" id="sidebart">
+                                            <div id="map_listing" class="normal_list">
+                                                <img width="100%" height="100%" src="/static/img/map.png">
+                                            </div>
+                                        </aside>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin:auto;">
+                                    <div class="col-6" style="margin:0px;"><a href="" id="pre2" class="btn_1 medium" style="float: left"><i class="icon-left-blod"></i>Previous</a></div>
+                                </div>
+                            </main>
+                        </div>
+                        <div data-tab id="tab3" style="display: none">
+                            <div class="main_title_3" style="margin-bottom: 10px;">
+                                <h3 style="color: #e84a5f; font-size:24px; font-weight: 800; text-align: center;">
+                                    <i class="icon-calendar"></i>Select Date
+                                </h3></div>
+                            <div class="form-group add_bottom_45">
+                                <div id="calendar"></div>
+                                <input type="hidden" name="date" id="my_date">
+                                <ul class="legend">
+                                    <li><strong></strong>Available</li>
+                                    <li><strong></strong>Not available</li>
+                                </ul>
+                                <div style="display: none" id="date_error"
+                                     class="alert alert-warning ">
+                                    <button id="date_error_close" type="button" class="close">&times;</button>
+                                    <strong id="date_error_text"></strong>
+                                </div>
+                            </div>
+                            <div class="row" style="margin:auto;">
+                                <div class="col-6"  style="margin:0px;"><a href="" id="pre3" class="btn_1 medium" style="float:left;"><i class="icon-left-blod"></i>Previous</a></div>
+                                <div class="col-6" style="margin:0px;"><a href="" id="next3" class="btn_1 medium" style="float:right;"><i class="icon-right-blod"></i>Next</a></div>
+                            </div>
+                        </div>
+                        <div data-tab id="tab4" style="display: none">
+                            <div class="main_title_3" style="margin-bottom: 10px;">
+                                <h3 style="color: #e84a5f; font-size:24px; font-weight: 800; text-align: center;">
+                                    <i class="icon-clock-5"></i>Select Time
+                            </h3></div>
+                            <div class="row" style='margin:auto; padding-bottom: 30px;'>
+                                <div class="col-8 text-center">
+                                    <ul id="ket" style="width:800px;" class="time_select" style="align-items: center;">
+                                    </ul>
+                                </div>
+                            </div>
+                            <div style="display: none" id="time_error" class="alert alert-warning ">
+                                    <button id="time_error_close" type="button" class="close">×</button>
+                                    <strong id="time_error_text"></strong>
+                            </div>
+                            <div class="row">
+                                <div class="col-6" style="margin:0px;"><a href="" id="pre4" class="btn_1 medium" style="float:left;"><i class="icon-left-blod"></i>Previous</a></div>
+                                <div class="col-6" style="margin:0px;"><a href="" id="next4" class="btn_1 medium" style="float:right;"><i class="icon-right-blod"></i>Next</a></div>
+                            </div>
+                        </div>
+                        <div data-tab id="tab5" style="display: none"  >
+                            <div class="col-6 col-8 clear" style="margin:auto;">
+                                <div class="main_title_3" style="margin-top:20px; line-height: 2;margin-bottom: 10px">
+                                    <h3 style="color:#3f4079; font-size: 24px;"><i class="icon-doc-text-1"></i>Appointment Summary</h3>
+                                </div>
+                                <form style="border-width:2px; border-color:#3f4079;margin: 100px; margin-top: 20px;">
+                                    <div class="row">
+                                        <div class="col-40"><i class="icon-user-1"></i>Patient name </div>
+                                        <div class="col-60"><span><b id="patient_name"></b></span><br/></div>
+                                    </div>
+                                     <div class="row">
+                                        <div class="col-40"><i class="icon-mail-1"></i>Patient email </div>
+                                        <div class="col-60"><span><b id="patient_email"></b></span><br/></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-40"><i class="icon-medkit"></i>Examination type </div>
+                                        <div class="col-60"><span><b id="examination"></b></span><br/></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-40"><i class="icon-hospital"></i>Radiology Clinic </div>
+                                        <div class="col-60"><span><b id="clinic_name"></b></span><br/></div>
+                                    </div>
+                                     <div class="row">
+                                        <div class="col-40"><i class="icon-hospital"></i>Clinic Email</div>
+                                        <div class="col-60"><span><b id="clinic_email"></b></span><br/></div>
+                                    </div>
+                                     <div class="row">
+                                        <div class="col-40"><i class="icon-hospital"></i>Clinic Contact </div>
+                                        <div class="col-60"><span><b id="clinic_contact"></b></span><br/></div>
+                                    </div>
+                                     <div class="row">
+                                        <div class="col-40"><i class="icon-hospital"></i>Clinic Address</div>
+                                        <div class="col-60"><span><b id="clinic_address"></b></span><br/></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-40"><i class="icon-calendar"></i>Appointment Date </div>
+                                        <div class="col-60"><span><b id="date"></b></span><br/></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-40"><i class="icon-clock-5"></i>Appointment Time </div>
+                                        <div class="col-60"><span><b id="time"></b></span><br/></div>
+                                    </div>
+                                    <div class="row">   
+                                        <div class="col-60" style="width:80%; margin: auto;padding-top: 10px;">
+                                            <input id="checkbox" type="checkbox" value="1">&nbsp;&nbsp;&nbsp;I accept the Cancellation Policy
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div style="display: none" id="checkbox_error" class="alert alert-warning ">
+                                <button id="checkbox_error_close" type="button" class="close">×</button>
+                                <strong id="checkbox_error_text">Please accept the cancellation policy</strong>
+                            </div>
+                            <div class="row">
+                                <div class="col-6" style="margin:0px;"><a href="" id="pre5" class="btn_1 medium" style="float:left;"><i class="icon-left-blod"></i>Previous</a></div>
+                                <div class="col-6" style="margin:0px;"><input type="button" value="submit" id="next5" lass="btn_1 medium" style="float:right;"/></div>
+                            </div>
+                        </div>
+                        <div data-tab id="tab6" style="display: none">
+                            <ul><li>
+                                <div class="row justify-content-center">
+                                    <div class="col-lg-8">
+                                        <div id="confirm">
+                                            <div class="icon icon--order-success svg add_bottom_15">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="72" height="72">
+                                                    <g fill="none" stroke="#8EC343" stroke-width="2">
+                                                        <circle cx="36" cy="36" r="35" style="stroke-dasharray:240px, 240px; stroke-dashoffset: 480px;"></circle>
+                                                        <path d="M17.417,37.778l9.93,9.909l25.444-25.393" style="stroke-dasharray:50px, 50px; stroke-dashoffset: 0px;"></path>
+                                                    </g>
+                                                </svg>
+                                            </div>
+                                        <h2>Thanks for your booking!</h2>
+                                            <p>Please read the following <a href="/static/pdf/CT_information_spectrum.pdf">documents</a></p>
+                                            <p><a href="/chat_box/">Chat with assistant bot if you have questions.</a></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block specific_js %}
+    <script src="{% static 'js/jquery-2.2.4.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap-datepicker.js' %}"></script>
+    <script>
+        // }myArray:[1:patient_name, 2: patient_email, 3: Questionaire, 4: Examination,5: clinic_id, 6: clinic_name,7:clinic_email,8:contact(clinic),9::date, 10:time,11:address(clinic)]
+        window.onload=function () {
+            get_array(1,"{{ patient_name }}");
+            get_array(2,"{{ patient_email }}");
+        };
+        var myArray=new Array();
+        function get_array(value,datas) {
+            myArray[value]=datas;
+        }
+        function go_to_table(n) {
+            let tab_id = "tab" + n;
+            $("[data-tab]").each(function () {
+                if (tab_id === this.id)
+                    $(this).show();
+                else {
+                    $(this).hide();
+                }
+            });
+            let nav_tab_id = "tab" + n + n;
+            $(".nav-link").each(function () {
+                if (nav_tab_id === this.id)
+                    $(this).addClass("active");
+                else {
+                    $(this).removeClass("active");
+                }
+            });
+        }
+        $('#calendar').datepicker({
+            todayHighlight: true,
+            weekStart: 1,
+            format: "yyyy-mm-dd",
+        });
+        $("[data-exam]").bind("click", function () {
+            if ($(".examination_active"))
+                $(".examination_active").removeClass("examination_active");
+            $(this).parent().addClass("examination_active");
+            $("#examination_type").val($(this).data('exam'));
+        });
+        $("#next0").click(function(event){
+            console.log(1);
+            event.preventDefault();
+            var q1=$("input[name='q1']:checked").val();
+            var q2=$("input[name='q2']:checked").val();
+            var q3=$("input[name='q3']:checked").val();
+            var q4=$("input[name='q4']:checked").val();
+            var q5=$("input[name='q5']:checked").val();
+            var q6=$("input[name='q6']:checked").val();
+            console.log(q1);
+            var Questionaire="{\"";
+            var Question_dict = {
+                    "q1":"Do you have any allergies?",
+                    "q2":"Do you have asthma?",
+                    "q3":"Do you have a history of kidney problems?",
+                    "q4":"Do you have diabetes?",
+                    "q5":"Do you have heart disease or high blood pressure for which you are taking medications?",
+                    "q6":"Is there any possibility that you could be pregnant?"};
+            if(q1==undefined||q2==undefined||q3==undefined||q4==undefined||q5==undefined||q6==undefined)
+            {
+                $("#question_error").show();
+                      $("#question_error_text").html("Selection cannot be empty");
+                      $("#question_close").click(function () {
+                          $("#question_error").hide();
+                  })
+            }
+            else {
+                if (q1 == "Yes") {
+                    Questionaire += Question_dict['q1'] + "\":\"\", \"";
+                }
+                if (q3 == 'Yes') {
+                    Questionaire += Question_dict['q3'] + "\":\"\", \"";
+                }
+                if (q4 == 'Yes') {
+                    Questionaire += Question_dict['q4'] + "\":\"\", \"";
+                }
+                if (q5 == 'Yes') {
+                    Questionaire += Question_dict['q5'] + "\":\"\", \"";
+                }
+                if (q6 == 'Yes') {
+                    Questionaire += Question_dict['q6'] + "\":\"\", \"";
+                }
+                if (q2 == 'Yes') {
+                    Questionaire += Question_dict['q2'] + '"';
+                }
+                Questionaire += '}';
+                get_array(3, Questionaire);
+                go_to_table(1);
+            }
+        });
+        function get_docter(clinic_id,clinic_name,clinic_email,contact,address){
+            get_array(5,clinic_id);
+            get_array(6,clinic_name);
+            get_array(7,clinic_email);
+            get_array(8,contact);
+            get_array(11,address);
+            go_to_table("3");
+        }
+        // get_clinic:step_1
+        function get_clinic(examination){
+            $.ajaxSetup({data:{csrfmiddlewaretoken:'{{ csrf_token }}'}});
+            $.ajax({
+                type: 'POST',
+                url: '/get_clinic/',
+                data: {"info": examination},
+                success: function (results) {
+                    render(results);
+                    var html=''+ results['count']+' results for '+result['examination'];
+                    $("#all_result").html(html)
+                }
+            });
+        }
+        function render(results){
+                var html='';
+                for (var i = 0; i < results['info'].length; i++) {
+                    var record = results['info'][i];
+                        html+='<div class="strip_list">';
+                        html+='<figure>';
+                           html+=' <a href="#"></a>';
+                        html+='</figure>';
+                        html+='<h3>Clinic name:'+record['clinic_name']+'</h3>';
+                        html+='<p>Address:'+record['address']+'</p>';
+                       html+=' <span class="rating">Tel:'+record['contact']+'</span>';
+                        html+='<ul>';
+                            html+='<li><a href="#" class="btn_listing">Email:'+record['clinic_email']+'</a></li>';
+                           html+=' <li><a href="#" target="_blank"></a></li>';
+                           html+=' <li><a onclick="get_docter('+record['clinic_id']+','+record['clinic_name']+','+record['clinic_email']+','+record['contact']+','+record['address']+')" href="#">Book now</a></li>';
+                        html+='</ul>';
+                    html+='</div>';
+                }
+                $('#cli_info').html(html);
+        }
+        // get_clinic_and_date   step_3
+        function get_clinic_and_date(clinic_id,value) {
+            $.ajaxSetup({data:{csrfmiddlewaretoken:'{{ csrf_token }}'}});
+            $.ajax({
+                type: 'POST',
+                url: '/get_clinic_and_date/',
+                data: {"date":value, "clinic_id":clinic_id},
+                success: function (results) {
+                    renders(results)
+                }
+            });
+        }
+        function renders(results) {
+            var html='';
+            for (var i = 0; i < results['info'].length; i++) {
+                var record = results['info'][i];
+                html+='<li>';
+                    html+='<input type="radio" id="radio'+i+'" name="radio_time" value="'+record+'">';
+                    html+='<label for="radio'+i+'">'+record+'</label>';
+                    html+='</li>';
+            }
+            $('#ket').html(html);
+        }
+        function get_clinic_name(value) {
+            $.ajaxSetup({data:{csrfmiddlewaretoken:'{{ csrf_token }}'}});
+            $.ajax({
+                type: 'POST',
+                url: '/get_clinic_name/',
+                data: {"info": value},
+                success: function (results) {
+                    get_array(6,results["ClinicName"]);
+                    $("#clinic_name").html(results["ClinicName"]);
+                }
+            });
+        }
+        // send_date step_6        
+        function get_post_date(p_email,p_name,question,examination,clinic_id,clinic_name,clinic_email,contact,address,date,time){
+            $.ajaxSetup({data:{csrfmiddlewaretoken:'{{ csrf_token }}'}});
+            $.ajax({
+                type: 'POST',
+                url: '/send_date/',
+                data: {
+                        'patient_email':patient_email,
+                        "patient_name":patient_name,
+                        'quesiton':quesiton,
+                        "examination":examination,
+                        'clinic_id':clinic_id,
+                        'clinic_name':clinic_name,
+                        'clinic_email':clinic_email,
+                        'contact':contact,
+                        'address':address,
+                        "date":date,
+                        "time":time,
+                        },
+                success: function (results) {
+                   if (results["tutes"]=="OK"){
+                       go_to_table("6");
+                   }
+                }
+            });
+        }
+        $("#next1").click(function (event) {
+            event.preventDefault();
+            if ($("#examination_type").val()) {
+                get_array(4,$("#examination_type").val());
+                get_clinic($("#examination_type").val());
+                go_to_table("2");
+            }
+            else {
+                $("#exam_error").show();
+                $("#exam_error_text").html("Please select a examination type！");
+                $("#exam_error_close").click(function () {
+                $("#exam_error").hide();
+                })
+            }
+        });
+        $("#next3").click(function (event) {
+            event.preventDefault();
+            let date = $('#calendar').datepicker("getDate");
+            if (date) {
+                let year = date.getFullYear();
+                let month = date.getMonth() + 1;
+                let day = date.getDate();
+                $("#my_date").val(year + "-" + month + "-" + day);
+                get_array(9,year + "-" + month + "-" + day);
+                $("#date_error").hide();
+                get_clinic_and_date(myArray[9],myArray[5]);
+                go_to_table("4");
+            } else {
+                $("#date_error").show();
+                $("#date_error_text").html("Please select a date！");
+                $("#date_error_close").click(function () {
+                    $("#date_error").hide();
+                })
+            }
+        });
+        $("#next4").click(function (event) {
+            event.preventDefault();
+            let radio_time = $("[name='radio_time']:checked");
+            var radios = document.getElementsByName("radio_time");
+            for ( var i = 0; i < radios.length; i++) {
+            if (radios[i].checked==true) {
+                  if(radios[i].value=='Unavailable'){
+                      $("#time_error").show();
+                      $("#time_error_text").html("Current time cannot be reserved");
+                      $("#time_error_close").click(function () {
+                          $("#time_error").hide();
+                      })
+                 }
+                 else if(radios[i].value=='12.00pm-1.00pm'){
+                      $("#time_error").show();
+                      $("#time_error_text").html("Current time is Lunch Time");
+                      $("#time_error_close").click(function () {
+                          $("#time_error").hide();
+                      })
+                 }
+                 else{
+                     get_array(10,radios[i].value);
+                    $("#type").html(myArray[4]);
+                    $("#date").html(myArray[9]);
+                    $("#time").html(myArray[10]);
+                    $("#time_error").hide();
+                    go_to_table("5");
+                  }
+                }
+            }
+            if (radio_time.length === 0) {
+                $("#time_error").show();
+                $("#time_error_text").html("Please select a date！");
+                $("#time_error_close").click(function () {
+                    $("#time_error").hide();
+                })
+            }
+        });       
+        $("#next5").click(function (event) {
+            if($('#checkbox').is(':checked')) {
+                event.preventDefault();
+                get_post_date(myArray[1],myArray[2],myArray[4],myArray[5],myArray[6],myArray[7],myArray[8],myArray[11],myArray[9],myArray[10]);
+                // console.log(myArray[0],myArray[1],myArray[2],myArray[3],myArray[4],myArray[5],myArray[6],myArray[7],myArray[8],,myArray[9],,myArray[10]);
+
+            }
+            else{
+                $("#checkbox_error").show();
+                $("#checkbox_error_close").click(function () {
+                    $("#checkbox_error").hide();
+                })
+            }
+        });        
+        $("#pre5").click(function (event) {
+            event.preventDefault();
+            go_to_table("4");
+        });
+
+        $("#pre4").click(function (event) {
+            event.preventDefault();
+            go_to_table("3");
+        });
+        $("#pre3").click(function (event) {
+            event.preventDefault();
+            go_to_table("2");
+        });
+
+        $("#pre2").click(function (event) {
+            event.preventDefault();
+            go_to_table("1");
+        });
+        $("#pre1").click(function (event) {
+            event.preventDefault();
+            go_to_table("0");
+        });
+    </script>
+{% endblock %}

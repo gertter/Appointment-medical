@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+{% block specific_css %}
+  <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/static/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <link href="/static/css/admin.css" rel="stylesheet">
+{% endblock %}
+{% block main %}
+<div class="bg_color_3">
+    <div class="main_title_2" style="padding-top:20px;"><h3><strong style="color:#ededed;">Statistics</strong></h3></div>
+  <div id="text" class="col-lg-8" style="margin:auto;">
+      <div class="card mb-3">
+      <div class="card-header">
+        <i class="fa fa-area-chart"></i> Number of daily appointments</div>
+      <div class="card-body">
+        <canvas id="myAreaChart" width="100%" height="30"></canvas>
+      </div>
+      <div class="card-footer small text-muted">Updated yesterday at {{ current_time }}</div>
+      </div>
+<div class="row">
+  <div class="col-lg-8">
+    <div class="card mb-3">
+      <div class="card-header">
+        <i class="fa fa-bar-chart"></i> Bar Chart Daily appointment histogra</div>
+      <div class="card-body">
+        <canvas id="myBarChart" width="100" height="50"></canvas>
+      </div>
+      <div class="card-footer small text-muted">Updated yesterday at {{ current_time }}</div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="card mb-3">
+      <div class="card-header">
+        <i class="fa fa-pie-chart"></i> Pie Chart Monthly appointments</div>
+      <div class="card-body">
+        <canvas id="myPieChart" width="100%" height="100"></canvas>
+      </div>
+      <div class="card-footer small text-muted">Updated yesterday at {{ current_time }}</div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+<a class="scroll-to-top rounded" href="#page-top">
+<i class="fa fa-angle-up"></i>
+</a>
+{% endblock %}
+{% block specific_js %}
+  <script src="/static/js/jquery.min.js"></script>
+  <script src="/static/js/bootstrap.bundle.min.js"></script>
+  <script src="/static/js/jquery.easing.min.js"></script>
+  <script src="/static/js/Chart.js"></script>
+  <script src="/static/js/jquery.dataTables.js"></script>
+  <script src="/static/js/jquery.selectbox-0.2.js"></script>
+  <script src="/static/js/retina-replace.min.js"></script>
+  <script src="/static/js/jquery.magnific-popup.min.js"></script>
+  <script src="/static/js/admin.js"></script>
+  <script src="/static/js/Chart.min.js"></script>
+  <script>
+
+  Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+  Chart.defaults.global.defaultFontColor = '#292b2c';
+  var ctx = document.getElementById("myAreaChart");
+  var myLineChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: [
+          {% for i in date_list %}
+          "{{ i }}",
+          {% endfor %}
+      ],
+      datasets: [{
+        label: "Number of appointments",
+        lineTension: 0.3,
+        backgroundColor: "rgba(2,117,216,0.2)",
+        borderColor: "rgba(2,117,216,1)",
+        pointRadius: 5,
+        pointBackgroundColor: "rgba(2,117,216,1)",
+        pointBorderColor: "rgba(255,255,255,0.8)",
+        pointHoverRadius: 5,
+        pointHoverBackgroundColor: "rgba(2,117,216,1)",
+        pointHitRadius: 20,
+        pointBorderWidth: 2,
+        data: [
+            {% for i in result_score %}
+          {{ i }},
+          {% endfor %}
+      ],
+      }],
+    },
+    options: {
+      scales: {
+        xAxes: [{
+          time: {
+            unit: 'date'
+          },
+          gridLines: {
+            display: false
+          },
+          ticks: {
+            maxTicksLimit: 7
+          }
+        }],
+        yAxes: [{
+          ticks: {
+            min: 0,
+            max: 20,
+            maxTicksLimit: 5
+          },
+          gridLines: {
+            color: "rgba(0, 0, 0, .125)",
+          }
+        }],
+      },
+      legend: {
+        display: false
+      }
+    }
+  });
+
+  </script>
+  <script>
+  var ctx = document.getElementById("myBarChart");
+  var myLineChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: [
+          {% for i in date_list %}
+          "{{ i }}",
+          {% endfor %}
+      ],
+      datasets: [{
+        label: "Number of appointments",
+        backgroundColor: "rgba(2,117,216,1)",
+        borderColor: "rgba(2,117,216,1)",
+        data: [ {% for i in result_score %}
+          {{ i }},
+          {% endfor %}
+          ],
+      }],
+    },
+    options: {
+      scales: {
+        xAxes: [{
+          time: {
+            unit: 'month'
+          },
+          gridLines: {
+            display: false
+          },
+          ticks: {
+            maxTicksLimit: 6
+          }
+        }],
+        yAxes: [{
+          ticks: {
+            min: 0,
+            max: 20,
+            maxTicksLimit: 5
+          },
+        }],
+      },
+      legend: {
+        display: false
+      }
+    }
+  });
+  </script>
+  <script>
+  var ctx = document.getElementById("myPieChart");
+  var myPieChart = new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: ["Approved","Cancelled"],
+      datasets: [{
+        data: [
+          {% for i in sure_score_list %}
+          {{ i }},
+          {% endfor %}
+        ],
+        backgroundColor: ['#6689cd','#ef8c50'],
+      }],
+    },
+  });
+  </script>
+  <script>
+    document.onreadystatechange=function(){
+      if(document.readyState=='complete'){
+        $('.loading').fadeOut();
+      }
+    }
+  </script>
+  <script>
+  window.onload=function a(){
+      var sidenavToggler=document.getElementById('sidenavToggler');
+      sidenavToggler.click();
+  }
+  </script>
+  <script>
+    var myArray=new Array();
+    function get_array(value,datas) {
+        myArray[value]=datas;
+    }
+    $("#sidenavToggler").click(function(){
+        if(myArray[0]==undefined){
+            $("#text").css("margin-left",80+'px');
+            get_array(0,1);
+             $("#foos").css("margin-left",0+'px');
+        }
+        else if(myArray[0]==1){
+             $("#text").css("margin-left",250+'px');
+             get_array(0,undefined);
+              $("#foos").css("margin-left",250+'px');
+        }
+
+    });
+    </script>
+{% endblock %}

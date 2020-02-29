@@ -1,0 +1,318 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block specific_css %}
+    <link href="{% static 'vendor/dropzone.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/schedule.css">
+    <link rel="stylesheet" href="/static/css/fullcalendar.css">
+    <link rel="stylesheet" href="/static/css/fullcalendar.print.css" media='print'>
+    <link rel="stylesheet" href="/static/layui/css/layui.css" media="all">
+    <link rel="shortcut icon" href="/static/img/favicon.ico" type="image/x-icon">
+    <link href="/static/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="/static/css/admin.css" rel="stylesheet">
+     <link href="/static/css/time.css" rel="stylesheet">
+    <style>
+        .content{
+            z-index: -1;
+            position: relative;
+        }
+    </style>
+{% endblock %}
+
+{% block main %}
+<div class="container" style="z-index:1000;position:fixed">
+<div id="date-picker-modal" class="hidden-2">
+  <div id="date-picker-top-bar">
+    <div id="date-picker-previous-month" class="date-picker-change-month">&lsaquo;</div>
+    <div id="date-picker-month">December 17</div>
+    <div id="date-picker-next-month" class="date-picker-change-month">&rsaquo;</div>
+  </div>
+  <div id="date-picker-exit">&times;</div>
+  <table id="date-picker">
+    <tr id="date-picker-weekdays">
+      <th>S</th>
+      <th>M</th>
+      <th>T</th>
+      <th>W</th>
+      <th>T</th>
+      <th>F</th>
+      <th>S</th>
+    </tr>
+  </table>
+    <button onclick="refuse()" style="margin-left: 100px;color:white;background: #1ae094" class="btn_1 gray approve">
+        Choice</button>
+</div>
+</div>
+    <div class="bg_color_3" with z-index = -1>
+        <div class="main_title_2" style="padding-top:20px;">
+            <h3><strong style="color:#ededed;">Manage Requests</strong>
+            </h3>
+        </div>
+        <div id="hello" class="box_container">
+            <div class="box_general">
+                <div class="header_box" style="height:30px;">
+                    <div class="filter" with z-index = 4>
+                        <select id="orderby" style="width: 160px;height: 30px;">
+                        <option value="Any status">Any status</option>
+                            <option value="Approved">Approved</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Cancel">Cancel</option>
+                            <option value="Requirement Added">Requirement Added</option>
+                            <option value="Report Uploaded">Report Uploaded</option>
+                        </select>
+                    </div>
+                </div>
+                {% if count > 0 %}
+                    <div role="tablist" class="add_bottom_45 accordion" id="requestlist">
+                        <ul>
+                            {% for i in bookings %}
+                                <div class="card">
+                                    <div class="card-header" role=tab>
+                                        <li><h4><strong style="font-weight: 1000; font-size: 18px;">{{ i.First_name }}, {{i.Last_name}}  </strong>
+                                            {% ifequal i.Status 'Approved' %}
+                                                <p class="btn_1 small" style="background-color:#227D51;">{{i.Status}}</p>
+                                            {% endifequal %}
+                                            {% ifequal i.Status 'Pending' %}
+                                                <strong class="btn_1 small" style="background-color:#F7D94C;">{{i.Status}}</strong>
+                                            {% endifequal %}
+                                            {% ifequal i.Status 'Cancel' %}
+                                                <strong class="btn_1 small" style="background-color:#e84a5f;">{{i.Status}}</strong>
+                                            {% endifequal %}
+                                            {% ifequal i.Status 'Requirement Added' %}
+                                                <strong class="btn_1 small" style="background-color:#58B2DC;">{{i.Status}}</strong>
+                                            {% endifequal %}
+                                            {% ifequal i.Status 'Report Uploaded' %}
+                                                <strong class="btn_1 small" style="background-color:#DB4D6D;">{{i.Status}}</strong>
+                                            {% endifequal %}
+                                            </h4>
+                                            <ul class="booking_details">
+                                                <li><strong>Booking date</strong>{{ i.Date }}</li>
+                                                <li><strong>Booking time</strong>{{ i.Time }}</li>
+                                                <li><strong>Examination</strong>{{ i.Examination }}</li>
+                                                <li><strong>Email</strong>{{ i.Email }}</li>
+                                                <li><strong>Requirements</strong>
+                                                    {% if i.requirement %}
+                                                         <a href="{% get_media_prefix %}{{i.requirement}}">Click to view</a>
+                                                    {% else %}
+                                                        <p>No Requirement yet</p>
+                                                    {% endif %}
+                                                </li>
+                                                {% if i.file %}
+                                                    <li><strong>Report</strong><a href="{% get_media_prefix %}{{i.file}}">Click to view</a>
+                                                {% endif %}
+                                            </ul>
+                                            <ul class="buttons">
+                                            {% if i.Status == 'Pending' or i.Status == 'Cancel' %}
+                                                <li><a href="#dates"  onclick="getok('{{ i.AppointmentID}}')" class="btn_1 gray approve"><i class="fa fa-fw fa-check-circle-o"></i> Approve</a></li>
+                                            {% endif %}
+                                            {% if i.Status == 'Pending' or i.Status == 'Approved' %}
+                                                <li id="key" class="ppp"><a onclick="get_refe('{{ i.AppointmentID}}')" class="btn_1 gray delete"><i class="fa fa-fw fa-times-circle-o"></i> Cancel</a></li>
+                                            {% endif %}
+                                            {% if i.Status != 'Report Uploaded' and i.Status != 'Requirement Added' and i.Status != 'Cancel' %}
+                                                <li><a href="" data-toggle="modal" onclick="choose('{{ i.AppointmentID }}|{{ i.Status }}')"
+                                                        data-target="#uploadModal" class="btn_1 small" style="background: #58B2DC">
+                                                        <i class="fa fa-fw fa-check-circle-o"></i>Add Requirement</a></li>
+                                            {% endif %}
+                                            </ul>
+                                        </li>
+                                        <a data-toggle="collapse" href="#collapse{{i.PatientID}}_ques"><i class="indicator icon_plus_alt2"></i></a>
+                                    </div>
+                                    <div id="collapse{{i.PatientID}}_ques" class="collapse" role="tabpanel" data-parent = "#requestlist">
+                                        <div class="card-body">
+                                            <form>
+                                                <h5 class="mb-0">Questionaire</h5>
+                                                <ul>
+                                                    <li>{{i.Questionaires}}</li>
+                                                </ul>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% else %}
+                    <div id="pass-info" class="clearfix weakpass" style="width:60%; padding: 15px;">
+                        <p>No booking records found</p>
+                    </div>
+                {% endif %}
+                <nav aria-label="...">
+                        <ul class="pagination pagination-sm add_bottom_30">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1">Previous</a>
+                            </li>
+                            <li class="page-item"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">Next</a>
+                            </li>
+                        </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <input style="display: none" type="text" id="get_time" value=""/>
+    <<div class="modal fade" id="uploadModal" role="dialog"
+         aria-labelledby="uploadModal"
+         aria-hidden="true">    
+        <div class="modal-dialog" role="document" style="z-index:2000;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Upload Requirement File</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="box_general ">
+
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label>Imaging File（PDF/IMAGE)</label>
+                                <p id="notice">Uploaded files will overwrite files before now</p>
+                                <form id="dropz"
+                                      method="post" class="dropzone">
+                                    {% csrf_token %}
+                                    <input hidden id="select_ap" name="app_id" type="text">
+                                </form>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block specific_js %}
+    <script src="/static/vendor/dropzone.min.js"></script>
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/jquery.easing.min.js"></script>
+    <script src="/static/js/jquery.selectbox-0.2.js"></script>
+    <script src="/static/js/retina-replace.min.js"></script>
+    <script src="/static/js/jquery.magnific-popup.min.js"></script>
+    <script src="/static/js/admin.js"></script>
+    <script src="/static/vendor/dropzone.min.js"></script>
+    <script src="/static/js/time.js"></script>
+    <script>
+       var myDropzone = new Dropzone("#dropz", {
+            url: "/requestlist/",
+            dictDefaultMessage: 'Drag files here or click upload', // 设置默认的提示语句
+            
+            paramName: "file", // 传到后台的参数名称
+            init: function () {
+                this.on("success", function (file, data) {
+                    window.location.href = "/requestlist/"
+                });
+            }
+        });
+        function choose(status) {
+            status = status.split("|");
+            console.log(status);
+            if (status[1] === "Cancel") {
+                document.getElementById("dropz").style.display = "none";
+                document.getElementById("notice").innerText = "Reservation has been cancelled, can't upload files";
+            } else {
+                document.getElementById("dropz").style.display = "block";
+                document.getElementById("notice").innerText = "Uploaded files will overwrite files before now";
+            }
+            document.getElementById("select_ap").value = status[0];
+        }
+
+        document.getElementById("orderby").onchange = function () {
+            let obj = document.getElementById("orderby");
+            let index = obj.selectedIndex;
+            let value = obj.options[index].value;
+            window.location.href = "/requestlist/?status=" + value
+        }       
+    </script>
+    <script>
+        window.onload=function a(){
+            var sidenavToggler=document.getElementById('sidenavToggler');
+        }
+    </script>
+    <script>
+        var myArrayw = new Array();
+        $("#sidenavToggler").click(function(){
+            console.log(myArrayw[0],myArrayw[0]==undefined);
+            if(myArrayw[0]==undefined){
+               clientX;
+                myArrayw[0]=true;
+                    clientY;
+            }
+            else if(myArrayw[0]==true) {
+                clientX;
+                myArrayw[0]=undefined;
+                clientY;
+            }
+        });
+    </script>
+    <script>
+        var myArray=new Array();
+        function get_array(value,datas) {
+            myArray[value]=datas;
+
+        }
+        function get_post(date,AppointmentID){
+            $.ajaxSetup({data:{csrfmiddlewaretoken:'{{ csrf_token }}'}});
+            $.ajax({
+                type: 'POST',
+                url: '/refese_reqest/',
+                data: {"date":date,"id":AppointmentID},
+                success: function (results) {
+                    location.reload();
+                }
+            });
+        }
+        $("#next3").click(function (event) {
+            event.preventDefault();
+            let date = $('#calendar').datepicker("getDate");
+            if (date) {
+                let year = date.getFullYear();
+                let month = date.getMonth() + 1;
+                let day = date.getDate();
+                get_array(0,year + "-" + month + "-" + day);
+                console.log(myArray[1],myArray[0]);
+                get_post(myArray[1],myArray[0]);
+                $("#date_error").hide();
+            } else {
+                $("#date_error").show();
+                $("#date_error_text").html("Please select a date！");
+                $("#date_error_close").click(function () {
+                    $("#date_error").hide();
+                })
+            }
+        });
+        function get_refe(AppointmentID) {
+        get_array(1,AppointmentID);
+        }
+        function getok(AppointmentID){
+            $.ajaxSetup({data:{csrfmiddlewaretoken:'{{ csrf_token }}'}});
+            $.ajax({
+                type: 'POST',
+                url: '/approve_reqest/',
+                data: {"id":AppointmentID},
+                success: function (results) {
+                    location.reload();
+                }
+            });
+        }
+        $("#pre3").click(function () {
+            $("#dates").hide();
+        })
+    </script>
+
+    <script>
+    function refuse() {
+        var date=$("#get_time").val();
+        var id=myArray[1];
+        {#console.log(date,id);#}
+        get_post(date,id);
+        $("#date-picker-modal").addClass("hidden-2");
+    }
+    </script>
+{% endblock %}

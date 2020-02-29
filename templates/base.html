@@ -1,0 +1,166 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %}{% endblock %}</title>
+	<link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'css/menu.css' %}" rel="stylesheet">
+    <link href="{% static 'css/vendors.css' %}" rel="stylesheet">
+    <link href="{% static 'css/icon_fonts/css/all_icons_min.css' %}" rel="stylesheet">
+    {% block specific_css %}{% endblock %}
+    <link href="{% static 'css/custom.css' %}" rel="stylesheet">
+	<link rel="stylesheet" href="/static/css/loading_2.css">
+</head>
+<body>
+	<div id="preloader" class="Fixed">
+		<div data-loader class ="dot-loading">
+			<div class="dot"></div>
+			<div class="dot"></div>
+			<div class="dot"></div>
+			<div class="dot"></div>
+			<div class="dot"></div>
+		</div>
+	</div>
+	<div id="page">
+		<header class="header_sticky" style="background-color: #242525;">	
+			<a href="#menu" class="btn_mobile">
+				<div class="hamburger hamburger--spin" id="hamburger">
+					<div class="hamburger-box">
+						<div class="hamburger-inner"></div>
+					</div>
+				</div>
+			</a>
+			<div class="container-fluid">
+				<div class="row">
+					<span class="col-sm-1"></span>
+					<div class="col-sm-3" style="margin:0;">
+						<div id="logo" style="margin-top:15px;">
+							<a href="{% url 'home' %}" title="COMP 9900"><img src="{% static 'img/logo_white.png' %}"
+																				data-retina="true"
+																				alt="">
+							</a>
+						</div>
+					</div>
+					<span class="col-sm-4"></span>
+					<div class="col-sm-3" style="float:left;">
+						<nav id="menu" class="main-menu">
+							<ul id="top_access">
+								<li><i class = "icon-home-1"></i>
+									<ul><a href="{% url 'home' %}"><i class =" icon-home-circled"></i>Home</a></ul>
+								<li><i class = "icon-chat-3"></i>
+									<ul><a href="/chat_box/"><i class = "icon-chat-inv"></i>Assistant Bot</a></ul>
+								</li>
+								{%if request.session.clinic_user %}
+									<li><i class =" icon-user-md"></i>
+										<ul><a href="{% url 'dashboard' %}"><i class="icon-gauge-2"></i>Hi, {{ request.session.clinic_user.name }}</a>
+											<a href="/requestlist/"><i class="icon-clipboard"></i>Request List</a>
+											<a href="/upload_report/"><i class="icon-clipboard-2"></i>Complete and Upload</a>
+											<a href="/statictics/"><i class = "icon-chart-bar-2"></i>Statistics</a>
+											<a href="/clinic_profile/"><i class="icon-edit-3"></i>Change Profile</a></ul>
+									</li>
+								{% elif request.session.user %}
+									<li><i class = "icon_clipboard"></i>
+										<ul><a href="{% url 'appointment' %}"><i class="icon-calendar"></i>Request an Examination</a></ul>
+									</li>
+									<li><i class = "icon_profile"></i>
+										<ul><p><i class="icon_user4"></i>Hi, {{ request.session.user.name }}</p>
+											<a href = "/bookings/"><i class="icon-list"></i>My Bookings</a>
+											<a href = "{% url 'patient_profile' %}"><i class="icon-edit-3"></i>Change Profile</a>
+										</ul>
+									</li>
+								{% else %}
+									<li><i class = "icon-login"></i>
+										<ul><a href = "{% url 'signin' %}"><i class = "icon-power"></i>Log in / Sign Up</a></ul>
+									</li>
+								{% endif %}
+								<li><i class = "icon-logout"></i>
+									<ul><li><a href = "{% url 'logout' %}"><i class = "icon-off"></i>Log out</a></li></ul>
+								</li>
+							</ul>
+						</nav>
+					</div>
+					<span class="col-sm-1"></span>
+				</div>
+			</div>
+		</header>
+		<main style="margin:0;">
+		{% block main %}{% endblock %}
+		</main>
+		<footer id="foos">
+			<div class="container margin_30_15">
+				<div class="row">
+					<div class="col-3" style="padding-top:5px;">
+						<p>
+							<img src="{% static 'img/logo_white.png' %}" data-retina="true" alt="" width="163" height="36" class="img-fluid">
+						</p>
+					</div>
+					<div class="col-3" style="padding-top:5px;">
+						<h5><i class="icon-group"></i>About</h5>
+						<div class="col">Online Radiology Examination Bookings</div>
+						<div class="col"><i class="icon-smiley"></i></div>
+						<div class="col">Assistant Chat bot for common questions</div>
+					</div>
+					<div class="col-3" style="padding-top:5px;">
+						<h5><i class="icon-group"></i> Team </h5>
+						<div class="col">Wind of Change</div>
+					<h5>Follow us</h5>
+						<div class="col">
+							<i class="icon-github-5" style="padding:5px;"></i>
+							<i class="icon-weibo"style="padding:5px;"></i>
+							<i class="icon-drupal"style="padding:5px;"></i>
+						</div>
+					</div>
+					<div class="col-3" style="padding-top:5px;">
+						<h5> COMP 9900 </h5>
+						<div class="col">UNSW </div>
+						<div class="col">2019 Term 3</div>
+					</div>
+				</div>
+				<hr>
+				<div class="row">
+					<div class="col-8">
+						<ul id="additional_links">
+							<li><a href="#0"> Privacy Terms and Conditions</a></li>
+						</ul>
+					</div>
+					<div class="col-4">
+						<div id="copy">© 2019</div>
+					</div>
+				</div>
+			</div>
+		</footer>
+	</div>
+	<script src="{% static 'js/jquery-2.2.4.min.js' %}"></script>
+	<script src="{% static 'js/common_scripts.min.js' %}"></script>
+	<script src="{% static 'js/functions.js' %}"></script>
+	<script src="{% static 'js/bootstrap-datepicker.js' %}"></script>
+	<script>
+	    $('#calendar').datepicker({
+	        todayHighlight: true,
+	        weekStart: 1,
+	        format: "yyyy-mm-dd",
+	    });
+	</script>
+	{% block specific_js %}
+	{% endblock %}
+	<script>
+	    document.onreadystatechange=function(){
+	      if(document.readyState=='complete'){
+	         $('#sk-three-bounce').delay(100).fadeOut();
+	      }
+	    }
+	</script>
+	<script>
+	//paste this code under the head tag or in a separate js file.
+		// Wait for window load
+		$(window).load(function() {
+			// Animate loader off screen
+			$(".dot-loading").fadeOut("slow");;
+		});
+	</script>
+</body>
+</html>

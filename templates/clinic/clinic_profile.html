@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% block title %}Clinic Profile{% endblock %}
+{% block specific_css %}
+  <link href="/static/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <link href="/static/css/admin.css" rel="stylesheet">
+{% endblock %}
+{% block main %}
+<div class="bg_color_3">
+    <div class="main_title_2" style="padding-top:20px;"><h3><strong style="color:#ededed;">My Profile</strong></h3></div>
+    <div class="box_background">
+        <form method="post">
+            {% csrf_token %}
+            <div class="box_general padding_bottom">
+                <input hidden value="{{ basic.ClinicID }}" type="text" name="ClinicID" />
+                <div class="header_box version_2">
+                    <h2><i class="fa fa-file"></i>Basic info</h2>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Clinic Name </label>
+                            <input value="{{basic.ClinicName }}" type="text" required name="ClinicName"
+                                class="form-control"
+                                placeholder="{{basic.ClinicName }}" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Contact</label>
+                            <input value="{{basic.Contact }}" type="text" required name="Contact"
+                                class="form-control"
+                                placeholder="{{basic.Contact}}" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="box_general padding_bottom">
+                <div class="header_box version_2">
+                    <h2>
+                        <i class="fa fa-file-text"></i>Examinations
+                    </h2>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <ul>
+                            {% for key,value in exam_dict %}
+                                <li>
+                                    {% ifequal value '1' %}
+                                        <input type="checkbox" class="checkbox" name = "examinations[]" value="{{key}}" checked/>
+                                        <label>{{key}}</label>
+                                    {% endifequal %}
+                                    {% ifequal value '0' %}
+                                        <input type="checkbox" class="checkbox" name = "examinations[]" value="{{key}}" />
+                                        <label>{{key}}</label>
+                                    {% endifequal %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="box_general padding_bottom">
+                <div class="header_box version_2">
+                    <h2>
+                        <i class="fa fa-map-marker"></i>Location
+                    </h2>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label>Zip Code</label>
+                            <input value="{{basic.ZipCode }}" 
+                            type="text" 
+                            required name="ZipCode" 
+                            class="form-control" 
+                            placeholder="4-digit Zipcode" />
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label>Address</label>
+                            <input value="{{basic.Address }}"
+                            type="text"required name="Address" class="form-control" placeholder="Address" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <div class="box_general padding_bottom">
+                        <div class="header_box version_2">
+                            <h2>
+                                <i class="fa fa-lock"></i>Change password
+                            </h2>
+                        </div>
+                        <input hidden value="{{ basic.Password }}" type="text" name="original_password" />
+                        <div class="form-group">
+                            <label>Old password</label>
+                            <input class="form-control" name = "old_password" type="password" />
+                        </div>
+                        <div class="form-group">
+                            <label>New password</label>
+                            <input id = "password1" class="form-control" name = "new_password" type="password" />
+                        </div>
+                        <div class="form-group">
+                            <label>Confirm new password</label>
+                            <input id = "password2" name = "Password" class="form-control" type="password" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="box_general padding_bottom">
+                        <div class="header_box version_2">
+                            <h2>
+                                <i class="fa fa-envelope"></i>Change email
+                            </h2>
+                        </div>
+                        <div class="form-group">
+                            <label>Old email</label>
+                            <input value="{{basic.Email }}" type="email" class="form-control" name="old_email" />
+                        </div>
+                        <div class="form-group">
+                            <label>New email</label>
+                             <input class="form-control" type="email" name="new_email" placeholder="New Email Address" />
+                        </div>
+                        <div class="form-group">
+                            <label>Confirm new email</label>
+                            <input value="{{basic.Email }}" class="form-control" name="Email" type="email" placeholder="Confirm New Email Address"/>
+                        </div>
+                    </div>
+                </div>
+                {% if error|length != 0 %}
+                    {% for e in error %}
+                        <div id="pass-info" class="clearfix weakpass"><h6 style="color:#e84a5f;">{{e}}</h6></div>
+                    {% endfor %}
+                {% endif %}
+                <p><input type="submit" value="Save" class="btn_1 medium"/></p>
+            </div>
+        </form>
+    </div>
+</div> 
+{% endblock %}
+{% block specific_js %}
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/jquery.easing.min.js"></script>
+    <script src="/static/js/Chart.js"></script>
+    <script src="/static/js/jquery.dataTables.js"></script>
+	<script src="/static/js/jquery.selectbox-0.2.js"></script>
+	<script src="/static/js/retina-replace.min.js"></script>
+	<script src="/static/js/jquery.magnific-popup.min.js"></script>
+    <script src="/static/js/admin.js"></script>
+{% endblock %}

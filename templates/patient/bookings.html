@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+ Bookings
+{% endblock %}
+{% block specific_css %}
+    <link href="{% static 'css/admin.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/dropzone.css' %}" rel="stylesheet">
+{% endblock %}
+{% block main %}
+<div class="bg_color_2">
+        <div class="container-fluid" style="padding: 30px;">
+            <!-- Breadcrumbs-->
+            <div class="box_general">
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h3 style="font-weight: 1000;"><i class="icon-list-1"></i>Appointment Table</h3>
+                    </div>
+                    <div class="card-body">
+                        <div  class="filter">
+                            <select name="orderby" id="orderby" class="selectbox">
+                                <option value="Any status">Any status</option>
+                                <option value="Approved">Approved</option>
+                                <option value="Pending">Pending </option>
+                                <option value="Cancel">Cancel</option>
+                                <option value="Requirement Added">Requirement Added</option>
+                                <option value="Report Uploaded">Report Uploaded</option>
+                            </select>
+                        </div>
+                        {% if count > 0 %}
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="AppTable" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Clinic Name</th>
+                                            <th>Status</th>
+                                            <th>Clinic Contact</th>
+                                            <th>Clinic Email</th>
+                                            <th>Date</th>
+                                            <th>Time</th>
+                                            <th>Examination</th>
+                                            <th>Questionaire</th>
+                                            <th>Requirement</th>
+                                            <th>Report</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        <tr>
+                                            <th>Clinic Name</th>
+                                            <th>Status</th>
+                                            <th>Clinic Contact</th>
+                                            <th>Clinic Email</th>
+                                            <th>Date</th>
+                                            <th>Time</th>
+                                            <th>Examination</th>
+                                            <th>Questionaire</th>
+                                            <th>Requirement</th>
+                                            <th>Report</th>
+                                        </tr>
+                                    </tfoot>
+                                    <tbody>
+                                        {% for i in bookings %}
+                                            <div class="modal fade" id="bookings{{ i.AppointmentID }}" tabindex="-1" role="dialog"
+                                                 aria-labelledby="bookings{{ i.AppointmentID }}"
+                                                 aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel">Questionnaire Detail</h5>
+                                                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">×</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="box_general ">
+                                                            <div style="white-space: pre-line;">{{ i.Questionaires }}</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <tr>
+                                                <td>{{ i.ClinicName }}</td>
+                                                <td>{% ifequal i.Status 'Approved' %}
+                                                        <i class="btn_1 small" style="background-color:#227D51;">{{i.Status}}</i>
+                                                    {% endifequal %}
+                                                    {% ifequal i.Status 'Pending' %}
+                                                        <i class="btn_1 small" style="background-color:#F7D94C;">{{i.Status}}</i>
+                                                    {% endifequal %}
+                                                    {% ifequal i.Status 'Cancel' %}
+                                                        <i class="btn_1 small" style="background-color:#e84a5f;">{{i.Status}}</i>
+                                                    {% endifequal %}
+                                                    {% ifequal i.Status 'Requirement Added' %}
+                                                        <strong class="btn_1 small" style="background-color:#58B2DC;">{{i.Status}}</strong>
+                                                    {% endifequal %}
+                                                    {% ifequal i.Status 'Report Uploaded' %}
+                                                        <i class="btn_1 small" style="background-color:#DB4D6D;">{{i.Status}}</i>
+                                                    {% endifequal %}
+                                                </td>
+                                                <td class="booking_details"> {{ i.Contact }} </td>
+                                                <td class="booking_details"> {{ i.Email }} </td>
+                                                <td class="booking_details"> {{ i.Date }} </td>
+                                                <td class="booking_details"> {{ i.Time }} </td>
+                                                <td class="booking_details"> {{ i.Examination }} </td>
+                                                <td class="booking_details"><a href="" onclick="" data-toggle="modal"
+                                                                                      data-target="#bookings{{ i.AppointmentID }}">Questionaire</a>
+                                                </td>
+                                                <td><strong>Requirements</strong>
+                                                    {% if i.requirement %}
+                                                         <a href="{% get_media_prefix %}{{i.requirement}}">Click to view</a>
+                                                    {% else %}
+                                                        <p>No Requirement yet</p>
+                                                    {% endif %}
+                                                </td>
+                                                <td><strong>Report</strong>
+                                                    {% if i.file %}
+                                                        <a href="{% get_media_prefix %}{{i.file}}">Click to view</a>
+                                                    {% else %}
+                                                        <p>Not uploaded yet</p>
+                                                    {% endif %}       
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div><h4>Sorry no records found under selected condition</h4></div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block specific_js %}
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+    <script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
+    <script src="{% static 'vendor/datatables/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'vendor/datatables/dataTables.bootstrap4.js' %}"></script>
+    <script src="{% static 'vendor/jquery.selectbox-0.2.js' %}"></script>
+    <script src="{% static 'vendor/retina-replace.min.js' %}"></script>
+    <script src="{% static 'vendor/jquery.magnific-popup.min.js' %}"></script>
+    <script>
+        document.getElementById("orderby").onchange = function () {
+            let obj = document.getElementById("orderby");
+            let index = obj.selectedIndex;
+            let text = obj.options[index].text;
+            let value = obj.options[index].value;
+            window.location.href = "{% url 'bookings' %}?status=" + value
+        }
+    </script>
+{% endblock %}

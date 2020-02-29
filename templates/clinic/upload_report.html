@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    Complete AND Upload Report
+{% endblock %}
+{% block specific_css %}
+    <link href="{% static 'vendor/dropzone.css' %}" rel="stylesheet">
+    <link href="/static/css/admin.css" rel="stylesheet">
+    <link href="/static/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+{% endblock %}
+{% block main %}
+    <div class="bg_color_3">
+        <div class="container-fluid" style="padding: 30px;">
+            <!-- Breadcrumbs-->
+            <div class="box_general">
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h3 style="font-weight: 1000;"><i class="icon-list-1"></i>Appointment Table</h3>
+                    </div>
+                    <div class="card-body">
+                        <div  class="filter">
+                            <select name="orderby" id="orderby" class="selectbox">
+                                <option value="Any status">Any status</option>
+                                <option value="Approved">Approved</option>
+                                <option value="Pending">Pending </option>
+                                <option value="Cancel">Cancel</option>
+                                <option value="Requirement Added">Requirement Added</option>
+                                <option value="Report Uploaded">Report Uploaded</option>
+                            </select>
+                        </div>
+                        {% if count > 0 %}
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="AppTable" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Status</th>
+                                            <th>Date</th>
+                                            <th>Time</th>
+                                            <th>Examination</th>
+                                            <th>Questionaire</th>
+                                            <th>Requirement</th>
+                                            <th>Report</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Status</th>
+                                            <th>Date</th>
+                                            <th>Time</th>
+                                            <th>Examination</th>
+                                            <th>Questionaire</th>
+                                            <th>Requirement</th>
+                                            <th>Report</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </tfoot>
+                                    <tbody>
+                                        {% for i in bookings %}
+                                            <div class="modal fade" id="bookings{{ i.AppointmentID }}" tabindex="-1" role="dialog"
+                                                 aria-labelledby="bookings{{ i.AppointmentID }}"
+                                                 aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel">Questionnaire Detail</h5>
+                                                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">×</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="box_general ">
+                                                            <div style="white-space: pre-line;">{{ i.Questionaires }}</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <tr>
+                                                <td>{{ i.First_name }}, {{i.Last_name}}</td>
+                                                <td>{% ifequal i.Status 'Approved' %}
+                                                        <i class="btn_1 small" style="background-color:#227D51;">{{i.Status}}</i>
+                                                    {% endifequal %}
+                                                    {% ifequal i.Status 'Pending' %}
+                                                        <i class="btn_1 small" style="background-color:#F7D94C;">{{i.Status}}</i>
+                                                    {% endifequal %}
+                                                    {% ifequal i.Status 'Cancel' %}
+                                                        <i class="btn_1 small" style="background-color:#e84a5f;">{{i.Status}}</i>
+                                                    {% endifequal %}
+                                                    {% ifequal i.Status 'Requirement Added' %}
+                                                        <strong class="btn_1 small" style="background-color:#58B2DC;">{{i.Status}}</strong>
+                                                    {% endifequal %}
+                                                    {% ifequal i.Status 'Report Uploaded' %}
+                                                        <i class="btn_1 small" style="background-color:#DB4D6D;">{{i.Status}}</i>
+                                                    {% endifequal %}
+                                                </td>
+                                                <td class="booking_details"> {{ i.Date }} </td>
+                                                <td class="booking_details"> {{ i.Time }} </td>
+                                                <td class="booking_details"> {{ i.Examination }} </td>
+                                                <td class="booking_details"><a href="" onclick="" data-toggle="modal"
+                                                                                      data-target="#booking{{ i.AppointmentID }}">Questionaire</a>
+                                                </td>
+                                                <td><strong>Requirements</strong>
+                                                    {% if i.requirement %}
+                                                         <a href="{% get_media_prefix %}{{i.requirement}}">Click to view</a>
+                                                    {% else %}
+                                                        <p>No Requirement yet</p>
+                                                    {% endif %}
+                                                </td>
+                                                <td><strong>Report</strong>
+                                                    {% if i.file %}
+                                                        <a href="{% get_media_prefix %}{{i.file}}">Click to view</a>
+                                                    {% else %}
+                                                        <p>Not uploaded yet</p>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <a href="" data-toggle="modal" onclick="choose('{{ i.AppointmentID }}|{{ i.Status }}')"
+                                                           data-target="#uploadModal" class="btn_1 small" style="background: #58B2DC">
+                                                    <i class="fa fa-fw fa-check-circle-o"></i>Upload Report</a>
+                                                </td>
+                                                
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div><h4>Sorry no records found under selected condition</h4></div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="uploadModal" role="dialog"
+         aria-labelledby="uploadModal"
+         aria-hidden="true">    
+        <div class="modal-dialog" role="document" style="z-index:2000;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Upload file</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="box_general ">
+
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label>Imaging File（PDF/IMAGE)</label>
+                                <p id="notice">Uploaded files will overwrite files before now</p>
+                                <form id="dropz"
+                                      method="post" class="dropzone">
+                                    {% csrf_token %}
+                                    <input hidden id="select_ap" name="app_id" type="text">
+                                </form>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block specific_js %}
+    <script src="/static/vendor/chart.js/Chart.min.js"></script>
+    <script src="/static/vendor/datatables/jquery.dataTables.js"></script>
+    <script src="/static/vendor/datatables/dataTables.bootstrap4.js"></script>
+    <script src="/static/vendor/dropzone.min.js"></script>
+    <script src="/static/vendor/retina-replace.min.js"></script>
+    <script src="/static/vendor/jquery.magnific-popup.min.js"></script>
+    <script src="/static/js/admin-datatables.js"></script>
+    <script src="/static/vendor/jquery.selectbox-0.2.js"></script>
+    <script>
+        var myDropzone = new Dropzone("#dropz", {
+            url: "/upload_report/",
+            dictDefaultMessage: 'Drag files here or click upload', // 设置默认的提示语句
+            
+            paramName: "file", // 传到后台的参数名称
+            init: function () {
+                this.on("success", function (file, data) {
+                    window.location.href = "/upload_report/"
+                });
+            }
+        });
+
+        function choose(status) {
+            status = status.split("|");
+            console.log(status);
+            if (status[1] === "Cancel") {
+                document.getElementById("dropz").style.display = "none";
+                document.getElementById("notice").innerText = "Reservation has been cancelled, can't upload files";
+            } else {
+                document.getElementById("dropz").style.display = "block";
+                document.getElementById("notice").innerText = "Uploaded files will overwrite files before now";
+            }
+            document.getElementById("select_ap").value = status[0];
+        }
+
+        document.getElementById("orderby").onchange = function () {
+            let obj = document.getElementById("orderby");
+            let index = obj.selectedIndex;
+            let value = obj.options[index].value;
+            window.location.href = "/upload_report/?status=" + value
+        }
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('#AppTable').dataTable( {
+                "paging":   true,
+                "ordering": true,
+                "info":     true,
+                "search": true,
+                "language":{
+                    "search" : "Filter by keywords:"
+                }
+            } );
+        } );
+    </script>
+{% endblock %}

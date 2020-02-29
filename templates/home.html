@@ -1,0 +1,183 @@
+﻿{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+    Home
+{% endblock %}
+{% block main %}
+	<div class="header-video">
+		<div id="hero_video">
+			<div class="content">
+			<h3>Radiology Examination Assistant</h3>
+			<p></p>
+			{% if request.session.clinic_user %}
+			<a href="/dashboard/" class="btn_1 medium fadeIn animated" style="background: blue;">Manage Requests</a>
+			{% elif request.session.user %}
+			<a href="{% url 'appointment' %}" class="btn_1 medium fadeIn animated">Start Booking</a>
+			{% else %}
+			<a href="{% url 'signin' %}" class="btn_1 medium fadeIn animated" style="background-color:#C73E3A">Start with Us</a>
+			{% endif %}
+			</div>
+		</div>
+		<img src="/static/img/video_fix.png" alt="" class="header-video--media" data-video-src="/static/video/intro" data-teaser-source="/static/video/intro" data-provider="" data-video-width="1920" data-video-height="750">
+	</div>
+	<div class="bg_color_2">
+		<div class="container margin_120_95">
+			<div class="main_title_3">
+				<h3 style="color:#e74e84; font-size:36px;"><strong>Specialization Overview></strong></h3>
+			</div>
+			<div id="reccomended" class="owl-carousel owl-theme">
+				<div class="item">
+					<a href="#0" class="box_cat_home">
+						<i class="icon-info-4"></i>
+						<img src="img/icon_cat_1.svg" width="60" height="60" alt="">
+						<h3>CT</h3>
+						<ul class="clearfix">
+							<li><strong>124</strong>Doctors</li>
+							<li><strong>60</strong>Clinics</li>
+						</ul>
+					</a>
+				</div>
+				<div class="item">
+					<a href="#0" class="box_cat_home">
+						<i class="icon-info-4"></i>
+						<img src="img/icon_cat_2.svg" width="60" height="60" alt="">
+						<h3>Cardiology</h3>
+						<ul class="clearfix">
+							<li><strong>124</strong>Doctors</li>
+							<li><strong>60</strong>Clinics</li>
+						</ul>
+					</a>
+				</div>
+				<div class="item">
+					<a href="#0" class="box_cat_home">
+						<i class="icon-info-4"></i>
+						<img src="img/icon_cat_3.svg" width="60" height="60" alt="">
+						<h3>MRI Resonance</h3>
+						<ul class="clearfix">
+							<li><strong>124</strong>Doctors</li>
+							<li><strong>60</strong>Clinics</li>
+						</ul>
+					</a>
+				</div>
+				<div class="item">
+					<a href="#0" class="box_cat_home">
+						<i class="icon-info-4"></i>
+						<img src="img/icon_cat_5.svg" width="60" height="60" alt="">
+						<h3>Dentistry</h3>
+						<ul class="clearfix">
+							<li><strong>124</strong>Doctors</li>
+							<li><strong>60</strong>Clinics</li>
+						</ul>
+					</a>
+				</div>
+				<div class="item">
+					<a href="#0" class="box_cat_home">
+						<i class="icon-info-4"></i>
+						<img src="img/icon_cat_6.svg" width="60" height="60" alt="">
+						<h3>X - Ray</h3>
+						<ul class="clearfix">
+							<li><strong>124</strong>Doctors</li>
+							<li><strong>60</strong>Clinics</li>
+						</ul>
+					</a>
+				</div>
+			</div>
+			<!-- /carousel -->
+		</div>
+		<!-- /container -->
+	</div>
+	<!-- /white_bg -->
+	<div class="container margin_120_90" style="padding:30px 30px">
+	    <div class="main_title">
+	        <h3 style="color:#e74e84; font-size:36px;"><strong>For Patients</strong></h3>
+	        <p style="color:black;font-size:25px;">Book your imaging appointment online</p>
+	    </div>
+
+	    <div class="row add_bottom_20">
+	        <div class="col-md-4">
+	            <div class="box_feat" id="icon_1" style="margin:10px;height: 330px;">
+	                <span></span>
+	                <h3>Register as patient</h3>
+	                <p>Get email notifications of appointment requests on-time</p>
+	            </div>
+	        </div>
+	        <div class="col-md-4">
+	            <div class="box_feat" id="icon_2" style="margin:10px;height: 330px;">
+	                <span></span>
+	                <h3>Request appointments</h3>
+	                <p>With your preferred time, date and examinations</p>
+	            </div>
+	        </div>
+	        <div class="col-md-4">
+	            <div class="box_feat" id="icon_3" style="margin:10px;height: 330px;">
+	                <span></span>
+	                <h3>Prepare examinations</h3>
+	                <p>View guide on our website or chat with the assistant bot</p>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+	<div class="bg_color_3" style="padding:30px;">
+		<div class="main_title">
+			<h3 style="color:#e74e84; font-size:36px;"><strong>For Clinics</strong></h3>
+			<p style="color:#fff;font-size:25px;">Manage your appointments on-click</p>
+		</div>
+		<div class="row add_bottom_20" style="width:60%; margin: auto;">
+			<div class="col-md-4">
+				<div class="box_feat" id="icon_1" style="margin:10px; height: 330px;">
+					<span></span>
+					<h3>Sign up as clinic</h3>
+					<p>Your choice of connection to our database or not</p>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="box_feat" id="icon_3" style="margin:10px;height: 330px;">
+					<span></span>
+					<h3>Log in your account</h3>
+					<p>Check booking requests and view clinic status</p>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="box_feat" id="icon_2" style="margin:10px;height: 330px;">
+					<span></span>
+					<h3>Manage request lists</h3>
+					<p>Approve or decline an appointment request</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="bg_color_2" style="padding:30px;">
+		<div class="row add_bottom_20" style="margin: auto; width: 80%;">
+			<div class="col-md-3">
+				<p><img src="img/app_img.svg" alt="" class="img-fluid" width="500" height="433"></p>
+			</div>
+			<div class="col-md-8">
+				<h5 style="color:#e74e84; font-size:36px;text-align: center;">
+					<i class="icon-users-2"></i>
+				About Us</h5>
+				<p><strong>  Full-stack Django based website project for radiology examination preparation and management.</strong></p>
+				<ul>
+					<li style="font-size:16px;font-weight:800; text-align: center;">
+						<p> Patient Examination reservation and preparation tips </p>
+						<p> Clinic appointment management </p>
+						<p> On-line Assistant chatbot</p></li>
+					<li style="font-weight:600;text-align: right;"> Team: Wind of Change </li>
+					<li style="font-weight:600;text-align: right;"> COMP 2019 Term 3 </li>
+					<li style="font-weight:600;text-align: right;"> University of New South Wales </li>
+				</ul>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+{% block specific_js %}
+	<script src="js/video_header.js"></script>
+	<script>
+		'use strict';
+		HeaderVideo.init({
+			container: $('.header-video'),
+			header: $('.header-video--media'),
+			videoTrigger: $("#video-trigger"),
+			autoPlayVideo: true
+		});
+	</script>
+{% endblock %}

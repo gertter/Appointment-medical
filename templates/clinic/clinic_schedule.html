@@ -1,0 +1,86 @@
+{% extends 'doctor/admin_base.html' %}
+{% load staticfiles %}
+{% block title %}
+    Schedule
+{% endblock %}
+{% block specific_css %}
+    <link rel="stylesheet" href="{% static 'css/schedule.css' %}">
+    <link rel="stylesheet" href="{% static 'css/fullcalendar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/fullcalendar.print.css' %}" media='print'>
+    <link rel="stylesheet" href="{% static 'layui/css/layui.css' %}" media="all">
+{% endblock %}
+{% block content %}
+    <div class="content-wrapper">
+        <div class="container-fluid">
+            <!-- Breadcrumbs-->
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="#">Dashboard</a>
+                </li>
+                <li class="breadcrumb-item active">Schedule</li>
+            </ol>
+            <input style="width: 250px" type="text" placeholder="go to" class="layui-input" id="datetime">
+            <div class="content" style="width: 80%">
+                <div class="row-fluid">
+                    <div class="span12">
+                        <div class="box">
+                            <div class="box-content box-nomargin">
+                                <div id="calendar" class="calendar"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /container-fluid-->
+    </div>
+{% endblock %}
+
+{% block specific_js %}
+    <script type="text/javascript" src="{% static 'js/fullcalendar.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/schedule.js' %}"></script>
+    <script src="{% static 'layui/layui.js' %}" charset="utf-8"></script>
+
+    <script>
+        layui.use('laydate', function () {
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '#datetime', lang: 'en',
+                done: function (value, date) {
+                    let day = parseInt(value.split("-")[2]);
+                    let year = parseInt(value.split("-")[0]);
+                    let month = parseInt(value.split("-")[1]) - 1;
+                    $('#calendar').fullCalendar('gotoDate', new Date(year, month, day));
+                }
+            });
+
+        });
+
+    </script>
+    <script>
+
+        $.ajax({
+            method: "POST",
+            url: "{% url 'api_schedule' %}",
+            success: function (data) {
+                console.log(data);
+                if (data.length > 0) {
+                    let arr = [];
+                    $.each(data, function (index, info) {
+                        console.log(info);
+                        let event = {
+                            title: info.title,
+                            start: info.start,
+                            end: info.end,
+                            allDay: false
+                        };
+                        event.className = arr;
+                        $('#calendar').fullCalendar('renderEvent', event, true);
+                    })
+                } else {
+
+                }
+            }
+        });
+    </script>
+{% endblock %}

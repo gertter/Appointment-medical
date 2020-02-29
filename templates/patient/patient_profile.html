@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}
+    My Profile
+{% endblock %}
+{% block specific_css %}
+    <link href="{% static 'vendor/dropzone.css' %}" rel="stylesheet">
+{% endblock %}
+{% block main %}
+<div class="bg_color_2">
+    <div class="main_title_2" style="padding-top:20px;"><h3><strong style="color:#ededed;">My Profile</strong></h3></div>
+    <div class="col-6 add_top_30" style="margin:auto;">  
+        <form action="/patient_profile/" method="post" class="box-form">
+            {% csrf_token %}
+            <input type="text" hidden value="{{ user.PatientID }}" name="PatientID">
+            <div class="box_general padding_bottom">
+                <div class="header_box version_2">
+                    <h3 style="font-weight:1000;"><i class="fa fa-file-text"></i>Personal details</h3>
+                </div>
+                <div class="row">
+                    <div class="col-6"><div class="form-group">
+                        <label>First Name</label>
+                        <input value="{{ user.First_name }}" type="text" required name="First_name" class="form-control" placeholder="Your name">
+                    </div></div>
+                    <div class="col-6"><div class="form-group">
+                        <label>Last name</label>
+                        <input value="{{ user.Last_name }}" type="text" required name="Last_name"
+                                class="form-control"
+                                placeholder="Your last name">
+                    </div>
+                    </div>
+                    <div class="col-6" style='margin:auto;'><div class="form-group">
+                        <label>Date of Birth</label>
+                        <input value="{{ user.DateOfBirth|date:'Y-m-d' }}" type="date" required name="DateOfBirth"
+                                class="form-control" id="bitrh"
+                                placeholder="Your birth">
+                    </div></div>
+                    <div class="col-6" style='margin:auto;'><div class="form-group">
+                        <label>Gender</label>
+                        <select class="form-control" name="Gender">
+                            <option value="F" {% ifequal user.Gender 'F' %}selected{% endifequal %}>F</option>
+                            <option value="M" {% ifequal user.Gender 'M' %}selected{% endifequal %}>M</option>
+                        </select>
+                    </div></div>
+                        <div class="col-6" style='margin:auto;'><div class="form-group">
+                            <label>Address</label>
+                            <input value="{{ user.Address }}" type="text" name="Address" required
+                                    class="form-control" id="bitrhs"
+                                    placeholder="Your Address">
+                        </div></div>
+                        <div class="col-6" style='margin:auto;'><div class="form-group">
+                            <label>Zipcode</label>
+                            <input value="{{ user.Zipcode }}" type="text" name="Zipcode" required
+                                    class="form-control" id="bitrhs"
+                                    placeholder="Your Zipcode">
+                        </div></div>
+                        <div class="col-12" style='margin:auto;'><div class="form-group">
+                            <label>Insurance</label>
+                            <select class="form-control" name="Insurance">
+                                <option {% ifequal user.Insurance 'Medicare' %}selected{% endifequal %}
+                                        value="Medicare">Medicare
+                                </option>
+                                <option {% ifequal user.Insurance 'Private Health Insurance' %}selected{% endifequal %}
+                                        value="Private Health Insurance">Private Health Insurance
+                                </option>
+                            </select>
+                        </div></div>
+                </div></div>
+                <!-- <row></row> -->
+            <div class="box_general padding_bottom">
+                <h3 style="font-weight:1000;"><i class="fa fa-file-text"></i>Account Infomation</h3>
+                <div class="row">
+                    <div class="col-6">
+                        <input type="text" hidden value="{{ user.Password }}" name="original_password">
+                        <div class="box_general padding_bottom">
+                            <p style="font-size:24px;color:#e84a5f;font-weight:600;"><i class="fa fa-lock"></i>Change password</p>
+                            <div class="form-group">
+                                <label>Old password</label>
+                                <input name = "old_password" class="form-control" type="password">
+                            </div>
+                            <div class="form-group">
+                                <label>New password</label>
+                                <input name ="new_password" class="form-control" type="password">
+                            </div>
+                            <div class="form-group">
+                                <label>Confirm new password</label>
+                                <input name="Password" class="form-control" type="password">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="box_general padding_bottom">
+                            <p style="font-size:24px;color:#e84a5f;font-weight:600;">
+                                <i class="fa fa-envelope"></i>Change email
+                            </p>
+                            <div class="form-group">
+                                <label>Old email</label>
+                                <input class="form-control" name="old_email" type="email" value="{{user.Email}}">
+                            </div>
+                            <div class="form-group">
+                                <label>New email</label>
+                                <input class="form-control" name="new_email"type="email">
+                            </div>
+                            <div class="form-group">
+                                <label>Confirm new email</label>
+                                <input class="form-control" name="Email" type="email" value="{{user.Email}}">
+                            </div>
+                        </div>
+                    </div>
+                    {% if error|length != 0 %}
+                        {% for e in error %}
+                            <div id="pass-info" class="clearfix weakpass"><h6 style="color:#e84a5f;">{{e}}</h6></div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <p><input type="submit" value="Save" class="btn_1 medium"/></p>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="/static/js/jquery.min.js"></script>
+<script>
+</script>
+{% endblock %}
+{% block specific_js %}
+    <script src="{% static 'vendor/dropzone.min.js' %}"></script>
+{% endblock %}
